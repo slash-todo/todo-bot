@@ -1,3 +1,5 @@
+const Logger = require('./Logger');
+
 function Plugin(nameOrObject, options = {}) {
   switch (typeof nameOrObject) {
     case 'string': {
@@ -13,7 +15,9 @@ function Plugin(nameOrObject, options = {}) {
     }
 
     default:
-      throw new Error('Unsupported name or config object!');
+      //throw new Error('Unsupported name or config object!');
+      Logger.error(new Error('Unsupported name or config object!'));
+      break;
   }
 }
 

@@ -1,4 +1,5 @@
 const { MessageTypes, DiscordUtils } = require('../../shared');
+const { Logger } = require('../../shared');
 
 // Default options mean reactions are captured for all new messages after the bot was enabled
 const initialOptions = {
@@ -21,10 +22,12 @@ function EmojiReactions(client, action, options = initialOptions) {
     const { client, action, options } = reactionParams;
 
     if (!client) {
-      throw new Error('EmojiReactions: No discord client provided!');
+      return Promise.reject(
+        new Error('EmojiReactions: No discord client provided!')
+      );
     }
     if (!action) {
-      throw new Error('EmojiReactions: No action provided!');
+      return Promise.reject(new Error('EmojiReactions: No action provided!'));
     }
 
     options.emojis =
@@ -83,7 +86,9 @@ function EmojiReactions(client, action, options = initialOptions) {
   }
 
   const reactionParams = new EmojiReactionsParams(client, action, options);
-  validateParams(reactionParams).then(init);
+  validateParams(reactionParams)
+    .then(init)
+    .catch(Logger.error);
 }
 
 module.exports = EmojiReactions;
