@@ -1,20 +1,20 @@
 {
   "server": {
-    "name": "",
-    "id": "466663506759122945"
+    "name": "// Todo",
+    "id": "516668464136716298"
   },
   "plugins": {
     "role-emoji-reactions": {
-      "channel": "532610365562028033",
-      "messageId": "532610408901640203",
+      "channel": "",
+      "messageId": "",
       "rules": {
         "😉": "Europe",
-        ":yum:": "North America",
-        ":ok_hand:": "South America",
-        ":grinning:": "Asia",
-        ":joy:": "South East Asia",
-        ":smiley:": "Africa",
-        ":relieved:": "Australia"
+        "😃": "North America",
+        "😂": "South America",
+        "😋": "Asia",
+        "🤣": "South East Asia",
+        "😄": "Africa",
+        "😎": "Australia"
       }
     }
   }
