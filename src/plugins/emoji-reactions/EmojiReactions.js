@@ -2,7 +2,7 @@ const { MessageTypes, DiscordUtils } = require('../../shared');
 
 // Default options mean reactions are captured for all new messages after the bot was enabled
 const initialOptions = {
-  channel: '',
+  channelId: '',
   messageId: '',
   emojis: [] // list of relevant emojis
 };
@@ -76,9 +76,10 @@ function EmojiReactions(client, action, options = initialOptions) {
       }
     }
 
-    DiscordUtils.fetchMessageByChannel(options.messageId, options.channel).then(
-      setupReactionsListeners
-    );
+    DiscordUtils.fetchMessageByChannel(
+      options.messageId,
+      options.channelId
+    ).then(setupReactionsListeners);
   }
 
   const reactionParams = new EmojiReactionsParams(client, action, options);

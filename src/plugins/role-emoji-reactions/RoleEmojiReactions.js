@@ -4,7 +4,7 @@ const { Logger, PermissionTypes, MessageTypes } = require('../../shared');
 // Default options to illustrate shape
 /* const initialOptions = {
   server: 'id'
-  channel: '',
+  channelId: '',
   messageId: '',
   rules: {
     emojiName: 'role',

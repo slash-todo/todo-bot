@@ -5,7 +5,7 @@
   },
   "plugins": {
     "role-emoji-reactions": {
-      "channel": "",
+      "channelId": "",
       "messageId": "",
       "rules": {
         "😉": "Europe",
