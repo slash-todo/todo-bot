@@ -1,5 +1,10 @@
-const { TodoBot } = require("./TodoBot");
+const Plugin = require('./shared/Plugin');
+const config = require('./config.json');
 
-const plugins = ["emoji-reactions"];
+const { TodoBot } = require('./TodoBot');
+
+const plugins = Object.entries(config.plugins).map(
+  ([name, options]) => new Plugin(name, options)
+);
 
 const todoBot = new TodoBot(plugins);

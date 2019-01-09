@@ -1,3 +1,3 @@
-const EmojiReactions = require("./EmojiReactions");
+const EmojiReactions = require('./EmojiReactions');
 
 module.exports = EmojiReactions;

@@ -1,21 +1,22 @@
-const Utils = require("../../shared/Utils");
+const EmojiReaction = require('../emoji-reactions');
 
-const EmojiReaction = Utils.requireDependency("../emoji-reactions");
-
+// Default options to illustrate shape
 const initialOptions = {
-  channel: "",
-  messageId: "",
+  channel: '',
+  messageId: '',
   rules: {
-    emojiName: "role",
-    emojiName2: "role2"
+    emojiName: 'role',
+    emojiName2: 'role2'
   }
 };
 
 function RoleEmojiReactions(client, options) {
-  function assignRole() {}
+  function handleReaction(emoji, user) {
+    function assignRole(user, role) {}
+  }
 
   function init() {
-    const emojiReactions = new EmojiReaction(client, options, assignRole);
+    new EmojiReaction(client, handleReaction, options);
   }
 
   init();

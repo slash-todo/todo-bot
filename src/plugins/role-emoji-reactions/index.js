@@ -1,3 +1,3 @@
-const RoleEmojiReactions = require("./RoleEmojiReactions");
+const RoleEmojiReactions = require('./RoleEmojiReactions');
 
 module.exports = RoleEmojiReactions;

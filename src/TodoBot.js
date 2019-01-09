@@ -1,9 +1,9 @@
-const DiscordClient = require("./shared/DiscordClient");
+const DiscordClient = require('./shared/DiscordClient');
 
 function TodoBot(plugins) {
   function initPlugins(plugins) {
-    plugins.forEach(pluginName => {
-      require(`./plugins/${pluginName}`)(DiscordClient);
+    plugins.forEach(plugin => {
+      require(`./plugins/${plugin.name}`)(DiscordClient, plugin.options);
     });
   }
 

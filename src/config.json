@@ -1,0 +1,17 @@
+{
+  "plugins": {
+    "role-emoji-reactions": {
+      "channel": "",
+      "messageId": "",
+      "rules": {
+        ":wink:": "Europe",
+        ":yum:": "North America",
+        ":ok_hand:": "South America",
+        ":grinning:": "Asia",
+        ":joy:": "South East Asia",
+        ":smiley:": "Africa",
+        ":relieved:": "Australia"
+      }
+    }
+  }
+}
