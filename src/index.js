@@ -7,4 +7,4 @@ const plugins = Object.entries(config.plugins).map(
   ([name, options]) => new Plugin(name, options)
 );
 
-const todoBot = new TodoBot(plugins);
+new TodoBot(plugins);
