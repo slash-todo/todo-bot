@@ -78,13 +78,6 @@ function RoleEmojiReactions(client, options) {
         );
       }
 
-      function shouldRemoveRole(actionType, member, roleName) {
-        return (
-          actionType === MessageTypes.MESSAGE_REACTION_REMOVE &&
-          hasRole(member, roleName)
-        );
-      }
-
       function addRole(member, role) {
         Logger.info(
           `Add role '${role.name}' to user '${member.user.username}'`
@@ -92,6 +85,13 @@ function RoleEmojiReactions(client, options) {
         member.addRole(role).catch(error => {
           Logger.error(`Error while adding role: ${error}`);
         });
+      }
+
+      function shouldRemoveRole(actionType, member, roleName) {
+        return (
+          actionType === MessageTypes.MESSAGE_REACTION_REMOVE &&
+          hasRole(member, roleName)
+        );
       }
 
       function removeRole(member, role) {

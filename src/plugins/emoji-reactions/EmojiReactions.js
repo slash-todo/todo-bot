@@ -1,9 +1,4 @@
-const MessageTypes = require('../../shared/MessageTypes');
-
-const ActionType = {
-  ADD: MessageTypes.MESSAGE_REACTION_ADD,
-  REMOVE: MessageTypes.MESSAGE_REACTION_REMOVE
-};
+const { MessageTypes, DiscordUtils } = require('../../shared');
 
 // Default options mean reactions are captured for all new messages after the bot was enabled
 const initialOptions = {
@@ -43,16 +38,8 @@ function EmojiReactions(client, action, options = initialOptions) {
   function init(reactionParams) {
     const { client, options } = reactionParams;
 
-    function fetchMessage() {
-      const channel = client.channels.find(c => c.id === options.channel);
-
-      if (channel) {
-        return channel.fetchMessage(options.messageId);
-      }
-    }
-
-    function setupReactionsListener(message) {
-      function processForMessage(context, reaction, user) {
+    function setupReactionsListeners(message) {
+      function processReaction(context, reaction, user) {
         const { message, actionType } = context;
         function handleReaction(reaction, actionType) {
           if (reaction) {
@@ -65,15 +52,21 @@ function EmojiReactions(client, action, options = initialOptions) {
       }
 
       function setupHandlers(message) {
+        const {
+          MESSAGE_REACTION_ADD: ADD,
+          MESSAGE_REACTION_REMOVE: REMOVE
+        } = MessageTypes;
+
         client.on(
-          MessageTypes.MESSAGE_REACTION_ADD,
-          processForMessage.bind(this, { message, actionType: ActionType.ADD })
+          ADD,
+          processReaction.bind(this, { message, actionType: ADD })
         );
+
         client.on(
-          MessageTypes.MESSAGE_REACTION_REMOVE,
-          processForMessage.bind(this, {
+          REMOVE,
+          processReaction.bind(this, {
             message,
-            actionType: ActionType.REMOVE
+            actionType: REMOVE
           })
         );
       }
@@ -83,9 +76,9 @@ function EmojiReactions(client, action, options = initialOptions) {
       }
     }
 
-    fetchMessage().then(setupReactionsListener);
-
-    //client.on(MessageTypes.MESSAGE_REACTION_ADD, handleMessageReactionAdd);
+    DiscordUtils.fetchMessageByChannel(options.messageId, options.channel).then(
+      setupReactionsListeners
+    );
   }
 
   const reactionParams = new EmojiReactionsParams(client, action, options);

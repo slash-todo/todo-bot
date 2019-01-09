@@ -16,12 +16,12 @@ function TodoBot(plugins) {
   function connectToDiscord() {
     Logger.info('Connecting to Discord...');
     function handleReady(resolve) {
-      //client.removeListener('ready', handleReady);
+      client.removeListener('ready', handleReady);
       Logger.info('Successfully connected to Discord!');
       resolve();
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       client.on('ready', () => handleReady(resolve));
     });
   }
@@ -45,4 +45,4 @@ function TodoBot(plugins) {
     .then(() => Logger.info('TodoBot is now running!'));
 }
 
-module.exports = { TodoBot };
+module.exports = TodoBot;
