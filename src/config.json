@@ -1,10 +1,14 @@
 {
+  "server": {
+    "name": "",
+    "id": "466663506759122945"
+  },
   "plugins": {
     "role-emoji-reactions": {
-      "channel": "",
-      "messageId": "",
+      "channel": "532610365562028033",
+      "messageId": "532610408901640203",
       "rules": {
-        ":wink:": "Europe",
+        "😉": "Europe",
         ":yum:": "North America",
         ":ok_hand:": "South America",
         ":grinning:": "Asia",

@@ -1,3 +1,5 @@
+const MessageTypes = require('../../shared/MessageTypes');
+
 // Default options mean reactions are captured for all new messages after the bot was enabled
 const initialOptions = {
   channel: '',
@@ -37,32 +39,30 @@ function EmojiReactions(client, action, options = initialOptions) {
     const { client, options } = reactionParams;
 
     function fetchMessage() {
-      /*DiscordClient.channels
-        .find(c => c.name === options.channel)
-        .fetchMessage(options.messageId); */
-      return client.channels
-        .find('name', options.channel)
-        .fetchMessage(options.messageId);
+      const channel = client.channels.find(c => c.id === options.channel);
+
+      if (channel) {
+        return channel.fetchMessage(options.messageId);
+      }
     }
 
-    function getFilters(reaction) {
-      return options.emojis.includes(reaction.emoji.name);
+    function setupReactionsListener(message) {
+      function handleReaction(reaction) {
+        if (reaction) {
+          action(reaction.emoji.name, reaction.users.last());
+        }
+      }
+
+      if (message) {
+        client.on(MessageTypes.MESSAGE_REACTION_ADD, reaction => {
+          if (reaction.message.id === message.id) {
+            handleReaction(reaction);
+          }
+        });
+      }
     }
 
-    function handleReaction(collected) {
-      const reaction = collected.first();
-      action(reaction.emoji.name, reaction.users.last());
-    }
-
-    function handleError(error) {
-      console.error('Error handling reaction: ', error);
-    }
-
-    console.log('Initialize Plugin: Emoji Reactions');
-    return fetchMessage()
-      .awaitReactions(getFilters(), {})
-      .then(handleReaction)
-      .catch(handleError);
+    fetchMessage().then(setupReactionsListener);
 
     //client.on(MessageTypes.MESSAGE_REACTION_ADD, handleMessageReactionAdd);
   }
