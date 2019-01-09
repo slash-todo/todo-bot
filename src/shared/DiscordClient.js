@@ -1,14 +1,16 @@
 const Discord = require('discord.js');
 
+const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
+
 function getDiscordClient() {
   return new Discord.Client();
 }
 
 function login(client) {
-  client.login('NDY2NTE3ODYxMjAwODIyMjc1.Die_5Q.BOI591c5kETTqOJSS3cJUXaf-vg');
+  client.login(DISCORD_TOKEN);
 }
 
-let client = getDiscordClient();
+const client = getDiscordClient();
 login(client);
 
 module.exports = client;
