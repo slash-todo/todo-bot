@@ -79,12 +79,14 @@ function RoleEmojiReactions(client, options) {
       }
 
       function addRole(member, role) {
-        Logger.info(
-          `Add role '${role.name}' to user '${member.user.username}'`
-        );
-        member.addRole(role).catch(error => {
-          Logger.error(`Error while adding role: ${error}`);
-        });
+        if (role && role.hasOwnProperty('name') && !member.user.bot) {
+          Logger.info(
+            `Add role '${role.name}' to user '${member.user.username}'`
+          );
+          member.addRole(role).catch(error => {
+            Logger.error(`Error while adding role: ${error}`);
+          });
+        }
       }
 
       function shouldRemoveRole(actionType, member, roleName) {

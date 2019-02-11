@@ -41,6 +41,14 @@ function EmojiReactions(client, action, options = initialOptions) {
   function init(reactionParams) {
     const { client, options } = reactionParams;
 
+    function addInitialEmojis(message, options) {
+      if (message && options && options.hasOwnProperty('emojis')) {
+        options.emojis.forEach(e => message.react(e));
+      }
+
+      return Promise.resolve(message);
+    }
+
     function setupReactionsListeners(message) {
       function processReaction(context, reaction, user) {
         const { message, actionType } = context;
@@ -79,10 +87,13 @@ function EmojiReactions(client, action, options = initialOptions) {
       }
     }
 
-    DiscordUtils.fetchMessageByChannel(
-      options.messageId,
-      options.channelId
-    ).then(setupReactionsListeners);
+    DiscordUtils.fetchMessageByChannel(options.messageId, options.channelId)
+      .then(message => addInitialEmojis(message, options))
+      .then(setupReactionsListeners)
+      .catch(error => {
+        const errorMsg = error instanceof Error ? error.message : error;
+        Logger.error(errorMsg);
+      });
   }
 
   const reactionParams = new EmojiReactionsParams(client, action, options);
