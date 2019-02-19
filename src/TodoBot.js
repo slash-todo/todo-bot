@@ -5,6 +5,7 @@ const DiscordClient = require('./shared/DiscordClient');
 
 function TodoBot(plugins) {
   const client = DiscordClient;
+  client.plugins = {};
 
   function initClient() {
     client.on('error', e => Logger.error(e));
@@ -28,11 +29,13 @@ function TodoBot(plugins) {
 
   function initPlugins(plugins) {
     Logger.info('Initializing plugins...');
+    let pluginApi;
     plugins.forEach(plugin => {
-      require(`./plugins/${plugin.name}`)(DiscordClient, {
+      pluginApi = require(`./plugins/${plugin.name}`)(DiscordClient, {
         ...plugin.options,
         server: config.server.id
       });
+      client.plugins[plugin.name] = pluginApi;
     });
     Logger.info('Successfully loaded plugins!');
     return Promise.resolve(true);

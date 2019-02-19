@@ -1,9 +1,11 @@
 {
   "server": {
     "name": "// Todo",
-    "id": "516668464136716298"
+    "id": ""
   },
   "plugins": {
+    "commands": {},
+    "remind-me": { "secondsBetweenRuns": 5 },
     "role-emoji-reactions": {
       "channelId": "",
       "messageId": "",
