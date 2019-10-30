@@ -1,0 +1,15 @@
+{
+  "name": "afk-plugin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "KenavR",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^12.12.3"
+  }
+}
