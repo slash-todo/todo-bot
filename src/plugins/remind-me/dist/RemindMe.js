@@ -8,6 +8,7 @@ var DESCRIPTION = 'Allows you to get reminded by the bot';
 function RemindMe(client, options) {
     if (options === void 0) { options = { secondsBetweenRuns: 5 }; }
     var reminders = {}; // key is date/time, value is { user, message }
+    var activeInterval = null;
     var commandsPluginApi = client.plugins[DEPENDENCIES.COMMANDS];
     function getTime(firstEntry) {
         try {
@@ -17,21 +18,29 @@ function RemindMe(client, options) {
             return false;
         }
     }
+    function addReminder(date, author, userMessage, message) {
+        if (!activeInterval) {
+            activeInterval = setInterval(remind, options.secondsBetweenRuns * 1000);
+        }
+        reminders[date.getTime()] = {
+            user: author,
+            userMessage: userMessage,
+            originalMessage: message
+        };
+    }
     /* !remindme 1 minute "What are you doing" */
     /* Notice: @User "What are you doing" - link to remindme - private DM */
     function remindMeHandler(message) {
         var now = new Date();
         var ddmmyyRegex = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/;
-        var msg = message.content.substring(COMMAND.length + 1);
+        var content = message.content;
+        var msgText = content.substring(content.indexOf('"') + 1, content.lastIndexOf('"'));
+        var msg = content.substring(COMMAND.length + 1);
         var separatedMsg = msg.split(' ');
         if (ddmmyyRegex.test(separatedMsg[0])) {
             // is date
             var date = new Date(separatedMsg[0]);
-            reminders[date.getTime()] = {
-                user: message.author,
-                userMessage: separatedMsg[1],
-                originalMessage: message
-            };
+            addReminder(date, message.author, msgText, message);
         }
         else {
             var time = getTime(separatedMsg[0]);
@@ -72,11 +81,7 @@ function RemindMe(client, options) {
                 }
                 var timeToRemind = time * multipler;
                 var date = new Date(now.getTime() + timeToRemind);
-                reminders[date.getTime()] = {
-                    user: message.author,
-                    userMessage: separatedMsg[2],
-                    originalMessage: message
-                };
+                addReminder(date, message.author, msgText, message);
             }
         }
     }
@@ -96,9 +101,12 @@ function RemindMe(client, options) {
         Object.values(past).forEach(function (r) {
             return r.originalMessage.author.send(createDM(r));
         });
+        if (Object.keys(future).length <= 0 && !!activeInterval) {
+            clearInterval(activeInterval);
+            activeInterval = null;
+        }
         reminders = future;
     }
-    setInterval(remind, options.secondsBetweenRuns * 1000);
     commandsPluginApi.registerCommand(COMMAND, DESCRIPTION, remindMeHandler);
 }
 exports.RemindMe = RemindMe;

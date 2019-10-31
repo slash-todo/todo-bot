@@ -30,6 +30,7 @@ export function RemindMe(
   options: RemindMeOptions = { secondsBetweenRuns: 5 }
 ) {
   let reminders: Reminders = {}; // key is date/time, value is { user, message }
+  let activeInterval: NodeJS.Timeout | null = null;
   const commandsPluginApi = client.plugins[DEPENDENCIES.COMMANDS];
 
   function getTime(firstEntry: string) {
@@ -40,22 +41,39 @@ export function RemindMe(
     }
   }
 
+  function addReminder(
+    date: Date,
+    author: User,
+    userMessage: string,
+    message: Message
+  ) {
+    if (!activeInterval) {
+      activeInterval = setInterval(remind, options.secondsBetweenRuns * 1000);
+    }
+    reminders[date.getTime()] = {
+      user: author,
+      userMessage,
+      originalMessage: message
+    };
+  }
+
   /* !remindme 1 minute "What are you doing" */
   /* Notice: @User "What are you doing" - link to remindme - private DM */
   function remindMeHandler(message: Message) {
     const now = new Date();
     const ddmmyyRegex = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/;
-    let msg = message.content.substring(COMMAND.length + 1);
+    const content = message.content;
+    let msgText = content.substring(
+      content.indexOf('"') + 1,
+      content.lastIndexOf('"')
+    );
+    let msg = content.substring(COMMAND.length + 1);
     let separatedMsg = msg.split(' ');
 
     if (ddmmyyRegex.test(separatedMsg[0])) {
       // is date
       const date = new Date(separatedMsg[0]);
-      reminders[date.getTime()] = {
-        user: message.author,
-        userMessage: separatedMsg[1],
-        originalMessage: message
-      } as Reminder;
+      addReminder(date, message.author, msgText, message);
     } else {
       const time = getTime(separatedMsg[0]);
       if (time) {
@@ -96,11 +114,7 @@ export function RemindMe(
 
         const timeToRemind: number = time * multipler;
         const date = new Date(now.getTime() + timeToRemind);
-        reminders[date.getTime()] = {
-          user: message.author,
-          userMessage: separatedMsg[2],
-          originalMessage: message
-        };
+        addReminder(date, message.author, msgText, message);
       }
     }
   }
@@ -126,10 +140,14 @@ ${reminder.originalMessage.url}
     Object.values(past).forEach((r: Reminder) =>
       r.originalMessage.author.send(createDM(r))
     );
+
+    if (Object.keys(future).length <= 0 && !!activeInterval) {
+      clearInterval(activeInterval);
+      activeInterval = null;
+    }
+
     reminders = future;
   }
-
-  setInterval(remind, options.secondsBetweenRuns * 1000);
 
   commandsPluginApi.registerCommand(COMMAND, DESCRIPTION, remindMeHandler);
 }
