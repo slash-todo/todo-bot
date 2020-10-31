@@ -8,11 +8,13 @@ function Commands(client) {
       }
     }
 
-    client.on('message', messageHandler);
-    registeredCommands[command] = description;
+    if (command.charAt(0) === '!') {
+      client.on('message', messageHandler);
+      registeredCommands[command] = description;
+    }
   }
 
-  registerCommand('!commands', 'Lists all available commands', function(
+  registerCommand('!commands', 'Lists all available commands', function (
     message
   ) {
     let commands = [
